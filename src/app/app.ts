@@ -18,11 +18,14 @@ app.get('/helth', (_req:Request, res:Response)=>{
     return res.send("Server is Running")
 })
 
-app.use((error:any, req:Request, res:Response, next: NextFunction)=>{
+app.use((error:any, _req:Request, res:Response, _next: NextFunction)=>{
 
     if(error instanceof BadRequestError){
         return res.status(400).json({message:error.message})
     }
+
+    return res.status(500).json({message:"Erro no Servidor"})
+
 
 })
 
