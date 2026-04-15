@@ -1,3 +1,4 @@
+import { BadRequestError } from '#/config/errors.js'
 import { AuthRouter } from '#Routes'
 import express, {type Response, type Request, type NextFunction} from 'express'
 
@@ -15,6 +16,14 @@ app.use('/auth', AuthRouter)
 
 app.get('/helth', (_req:Request, res:Response)=>{
     return res.send("Server is Running")
+})
+
+app.use((error:any, req:Request, res:Response, next: NextFunction)=>{
+
+    if(error instanceof BadRequestError){
+        return res.status(400).json({message:error.message})
+    }
+
 })
 
 export default app
