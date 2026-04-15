@@ -1,0 +1,60 @@
+{
+  "name": "back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx --watch ./src/server.ts",
+    "build": "tsc",
+    "start": "npm run build && node ./dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
+    "prisma": "^7.7.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0"
+  },
+  "imports": {
+    "#/*": [
+      "./dist/*"
+    ],
+    "#/prisma": [
+      "./dist/config/prisma.js"
+    ],
+    "#repository": [
+      "./dist/repository/index.js"
+    ],
+    "#Errors": [
+      "./dist/config/errors.js"
+    ],
+    "#Utils": [
+      "./dist/utils/index.js"
+    ],
+    "#Services": [
+      "./dist/services/index.js"
+    ],
+    "#Controllers":["./dist/controllers/index.js"],
+    "#Routes":["./dist/routes/index.js"]
+
+
+  }
+}

@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  Admin
+  Shelter
+  User
+}
+
+model Account {
+  id String @id @default(uuid())
+  email String @unique
+  password String
+  role Role @default(User)
+  user User?
+  shelter Shelter?
+  notification Notification[]
+}
+
+model Shelter {
+  id String @id @default(uuid())
+  name String
+  account_id String @unique
+  account Account @relation(fields: [account_id], references: [id])
+  id_location String @unique
+  location Location @relation(fields: [id_location], references: [id])
+  storage Int
+  license String
+  kid Kid[]
+
+}
+
+model User {
+  id String @id @default(uuid())
+  account_id String @unique
+  account  Account @relation(fields: [account_id], references: [id])
+  first_name String 
+  last_name String 
+  birthday DateTime 
+}
+
+model Location {
+  id String @id @default(uuid())
+  province String @default("Luanda")
+  municipality String @default("Kilamba Kiaxi")
+  neighboor String @default("Palanca")
+  reference String?
+  shelter Shelter?
+  kid Kid[]
+
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum CaseStatus {
+  REPORTED    // Reportada
+  REVIEWING   // Revisando
+  SHELTERED   // Acolhida
+  REUNITED    // Reunificada
+}
+
+model Kid {
+  id String @id @default(uuid())
+  first_name String
+  last_name String?
+  nickname String
+  birth_day DateTime?
+  photo String?
+  note String?
+  id_shelter String
+  shelter Shelter @relation(fields: [id_shelter], references: [id])
+  last_location String
+  location Location @relation(fields: [ last_location], references: [id])
+  gender Gender?
+  is_alone Boolean?
+  status CaseStatus @default(REPORTED )
+  aproximate_age Int?
+  rescued_day DateTime?
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id String @id @default(uuid())
+  title String
+  description String
+  read Boolean @default(false)
+  id_account String
+  account Account @relation(fields: [id_account], references: [id])
+}
