@@ -1,10 +1,15 @@
-import { BadRequestError } from '#/config/errors.js'
+import { BadRequestError, NotFoundError } from '#/config/errors.js'
 import { AuthRouter } from '#Routes'
 import express, {type Response, type Request, type NextFunction} from 'express'
+import cors from "cors"
+import type { ValidationError } from 'express-validator'
 
 const app = express()
 
-
+//Config
+    app.use(cors())
+    app.use(express.json())
+// Handlers
 app.use((req:Request, res:Response, next:NextFunction)=>{
     res.on('finish', ()=>{
         console.log(`[${req.method}] ${req.originalUrl} -> ${res.statusCode}`)
@@ -12,20 +17,49 @@ app.use((req:Request, res:Response, next:NextFunction)=>{
     next()
 })
 
+app.use((err:any, _req:Request, res:Response, next:NextFunction) => {
+  if (err instanceof SyntaxError && 'body' in err) {
+    return res.status(400).json({ 
+      error: "JSON Inválido", 
+      message: "O corpo da requisição não é um JSON bem formatado." 
+    });
+  }
+  next();
+});
+
 app.use('/auth', AuthRouter)
 
 app.get('/helth', (_req:Request, res:Response)=>{
     return res.send("Server is Running")
 })
 
-app.use((error:any, _req:Request, res:Response, _next: NextFunction)=>{
 
+app.use((req: Request, _res: Response, next: NextFunction) => {
+    // Cria o erro e passa-o para o Error Handler
+    const error = new NotFoundError(`A rota ${req.originalUrl} com o método ${req.method} não existe no servidor.`);
+    next(error); 
+});
+app.use((error:any, _req:Request, res:Response, _next: NextFunction)=>{
+    let statusCode = 500
+    let message = "Erro interno do Servidor"
+    let errors = null
     if(error instanceof BadRequestError){
-        return res.status(400).json({message:error.message})
+        statusCode = 400
+        message = error.message
+        if(error.errors){
+            errors = error.errors.map((error:ValidationError)=>error.msg)
+        }
     }
 
-    return res.status(500).json({message:"Erro no Servidor"})
+    if(error instanceof NotFoundError){
+        statusCode = 404
+        message = error.message
+        
+    }
 
+    console.error(error.message)
+
+    return res.status(statusCode).json({message, errors})
 
 })
 

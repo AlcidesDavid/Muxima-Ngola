@@ -1,4 +1,5 @@
-import { prisma } from "#/prisma"
+import type { TransactionClient } from "#/generated/prisma/internal/prismaNamespace.js"
+import { prismaClient } from "#/prisma"
 
 export type NewShelter = {
     name: string
@@ -14,7 +15,8 @@ export class ShelterRepository{
         
     }
 
-    create = async ({id_location, account_id, name, storage, license}:NewShelter)=>{
+    create = async ({id_location, account_id, name, storage, license}:NewShelter, tx?:TransactionClient)=>{
+        const prisma = tx || prismaClient
         return await prisma.shelter.create({data:{
             id_location,
             account_id,

@@ -13,7 +13,8 @@
       "#Utils":["./src/utils/index.ts"],
       "#Services":["./src/services/index.ts"],
       "#Controllers":["./src/controllers/index.ts"],
-      "#Routes":["./src/routes/index.ts"]
+      "#Routes":["./src/routes/index.ts"],
+      "#Validators":["./src/utils/Validators.ts"]
     },
     // Environment Settings
     // See also https://aka.ms/tsconfig/module

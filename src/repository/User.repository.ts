@@ -1,5 +1,6 @@
-import {prisma} from "#/prisma"
+import {prismaClient} from "#/prisma"
 import { Prisma } from "#/generated/prisma/client.js"
+import type { TransactionClient } from "#/generated/prisma/internal/prismaNamespace.js"
 
 export type NewUser= {
     first_name:string
@@ -13,12 +14,14 @@ export class UserRepository {
         
     }   
 
-    create = async ({first_name, last_name, id_account, birthday}:NewUser)=>{
+    create = async ({first_name, last_name, id_account, birthday}:NewUser, tx?:TransactionClient)=>{
+        const prisma = tx || prismaClient
+
         return await prisma.user.create({data:{
             first_name,
             last_name,
             account_id:id_account,
-            birthday
+            birthday:new Date(birthday)
         }})
     }
 }

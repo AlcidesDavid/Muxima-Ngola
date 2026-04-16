@@ -1,4 +1,4 @@
-import {sign} from "jsonwebtoken"
+import jwt from "jsonwebtoken"
 type Payload = {
     id_account:string,
     role:'Admin'|'Shelter' | 'User'
@@ -11,7 +11,7 @@ const REFRESH_SECRET = process.env.REFRESH_SECRET || ""
 const accessEncoded = new TextEncoder().encode(ACCESS_SECRET)
 export const generateAccessToken = (payload:Payload)=>{
 
-    return sign({...payload, type:"access"},ACCESS_SECRET, {
+    return jwt.sign({...payload, type:"access"},ACCESS_SECRET, {
         expiresIn:'15MIN',
         algorithm:"HS256"
     } )
@@ -20,7 +20,7 @@ export const generateAccessToken = (payload:Payload)=>{
 
 export const generateRefreshToken = (payload:Payload)=>{
 
-    return sign({...payload, type:"refresh"},REFRESH_SECRET, {
+    return jwt.sign({...payload, type:"refresh"},REFRESH_SECRET, {
         expiresIn:'7DAYS',
         algorithm:"HS256",
 
