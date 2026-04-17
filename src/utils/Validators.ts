@@ -56,7 +56,7 @@ export const shelterValidator = [
   ...locationValidator.slice(0, -1),
   body('name').notEmpty().withMessage('Nome é obrigatorio preencha o campo {name}').trim(),
   body('license').notEmpty().withMessage('Alvara de Funcionamento é obrigatorio preencha o campo {licensa}').trim(),
-  body('storage').isLength({ min: 6 }).withMessage('Um ler deve conseguir no minimo deve ter no mínimo 6 caracteres'),
+  body('storage').notEmpty().withMessage("Capacidade é obrigatorio preencha o campo {storage}"),
   validateRequest
 ]
 
