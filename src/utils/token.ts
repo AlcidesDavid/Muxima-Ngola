@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken"
 type Payload = {
     id_account:string,
     role:'Admin'|'Shelter' | 'User'
-    type: 'refresh' | 'access'
 }
 
 const ACCESS_SECRET = process.env.ACCESS_SECRET || ""

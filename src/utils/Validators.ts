@@ -43,6 +43,7 @@ export const userValidator = [
 
   validateRequest
 ];
+
 export const locationValidator = [ 
   body('province').notEmpty().withMessage("Provincia é obrigatorio preencha o campo {province}").trim(),
   body('municipality').notEmpty().withMessage("Municipio e um campo obrigatorio preencha o campo {municipality}").trim(),
@@ -59,4 +60,3 @@ export const shelterValidator = [
   body('storage').notEmpty().withMessage("Capacidade é obrigatorio preencha o campo {storage}"),
   validateRequest
 ]
-
