@@ -3,7 +3,7 @@ import type { AuthRequest } from "#/types/controller.js";
 import { decodeToken } from "#/utils/token.js";
 import type { NextFunction, Request, Response } from "express";
 
-export const AuthMiddleware = async (req:AuthRequest, res:Response, next:NextFunction)=>{
+export const AuthMiddleware = async (req:AuthRequest, _res:Response, next:NextFunction)=>{
     const token = req.cookies?.['accessToken']
 
     if(!token){
