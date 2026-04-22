@@ -1,6 +1,6 @@
 import { BadRequestError } from "#/config/errors.js";
 import type { NextFunction, Request, Response } from "express";
-import { body, validationResult } from "express-validator";
+import { body, matchedData, validationResult } from "express-validator";
 
 
 export const validateRequest = (req:Request, _res:Response, next:NextFunction)=>{
@@ -9,6 +9,8 @@ export const validateRequest = (req:Request, _res:Response, next:NextFunction)=>
     if(!errors.isEmpty()){
         return next(new BadRequestError("Erro de validacao", errors.array()))
     }
+
+    req.body = matchedData(req, {includeOptionals:true})
     next()
 }
 
@@ -57,6 +59,47 @@ export const shelterValidator = [
   ...locationValidator.slice(0, -1),
   body('name').notEmpty().withMessage('Nome é obrigatorio preencha o campo {name}').trim(),
   body('license').notEmpty().withMessage('Alvara de Funcionamento é obrigatorio preencha o campo {licensa}').trim(),
-  body('storage').notEmpty().withMessage("Capacidade é obrigatorio preencha o campo {storage}"),
+  body('storage').notEmpty().withMessage("Capacidade é obrigatorio preencha o campo {storage}").isInt({min:10}).withMessage('Deve ter capacidade para abirgar no minimo 10 crianças'),
   validateRequest
 ]
+
+export const kidValidator = [
+  ...locationValidator.slice(0,-1),
+   body('first_name')
+    .notEmpty().withMessage('Primeiro nome é obrigatório campo: {first_name}')
+    .trim(),
+
+  body('last_name')
+    .optional()
+    .trim(),
+
+  body('nickname')
+    .optional()
+    .trim(),
+
+  body('birth_day')
+    .optional()
+    .isISO8601().withMessage('Formato de data inválido campo: {birth_day}'),
+
+  body('photo')
+    .optional()
+    .isURL().withMessage('URL da foto inválida campo: {photo}'),
+
+  body('note')
+    .optional()
+    .trim(),
+
+  body('gender')
+    .notEmpty().withMessage('Gênero é obrigatório campo: {gender}')
+    .isIn(['Male', 'Female']).withMessage('Gênero deve ser Male ou Female campo: {gender}'),
+
+  body('is_alone')
+    .notEmpty().withMessage('O campo is_alone é obrigatório campo: {is_alone}')
+    .isBoolean().withMessage('is_alone deve ser um booleano campo: {is_alone}'),
+
+  body('aproximate_age')
+    .notEmpty().withMessage('Idade aproximada é obrigatória campo: {aproximate_age}')
+    .isInt({ min: 0 }).withMessage('Idade deve ser um número válido campo: {aproximate_age}'),
+
+  validateRequest
+];

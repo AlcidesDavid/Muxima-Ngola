@@ -25,6 +25,7 @@ model Account {
   role Role @default(User)
   user User?
   shelter Shelter?
+  kid Kid[]
   notification Notification[]
 }
 
@@ -77,12 +78,12 @@ model Kid {
   id String @id @default(uuid())
   first_name String
   last_name String?
-  nickname String
+  nickname String?
   birth_day DateTime?
   photo String?
   note String?
-  id_shelter String
-  shelter Shelter @relation(fields: [id_shelter], references: [id])
+  id_shelter String?
+  shelter Shelter? @relation(fields: [id_shelter], references: [id])
   last_location String
   location Location @relation(fields: [ last_location], references: [id])
   gender Gender?
@@ -90,6 +91,8 @@ model Kid {
   status CaseStatus @default(REPORTED )
   aproximate_age Int?
   rescued_day DateTime?
+  add_by String
+  account Account @relation(fields: [add_by], references: [id])
   createdAt DateTime @default(now())
 }
 

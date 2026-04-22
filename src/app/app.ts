@@ -1,5 +1,5 @@
-import { BadRequestError, NotFoundError } from '#/config/errors.js'
-import { AuthRouter } from '#Routes'
+import { BadRequestError, ForbidenError, NotFoundError } from '#/config/errors.js'
+import {  Routers } from '#Routes'
 import express, {type Response, type Request, type NextFunction} from 'express'
 import cors from "cors"
 import type { ValidationError } from 'express-validator'
@@ -27,7 +27,7 @@ app.use((err:any, _req:Request, res:Response, next:NextFunction) => {
   next();
 });
 
-app.use('/auth', AuthRouter)
+app.use(Routers)
 
 app.get('/helth', (_req:Request, res:Response)=>{
     return res.send("Server is Running")
@@ -53,9 +53,15 @@ app.use((error:any, _req:Request, res:Response, _next: NextFunction)=>{
 
     if(error instanceof NotFoundError){
         statusCode = 404
-        message = error.message
-        
+        message = error.message    
     }
+
+    if(error instanceof ForbidenError){
+        statusCode = 401
+        message = error.message
+    }
+
+
 
     console.error(error.message)
 

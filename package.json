@@ -62,6 +62,8 @@
     ],
     "#Validators": [
       "./dist/utils/Validators.js"
-    ]
+    ],
+    "#Types":["./dist/types/index.js"]
+
   }
 }

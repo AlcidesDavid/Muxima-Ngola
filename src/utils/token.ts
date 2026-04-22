@@ -1,3 +1,4 @@
+import { ForbidenError, InvalidTokenError } from "#/config/errors.js"
 import jwt from "jsonwebtoken"
 type Payload = {
     id_account:string,
@@ -29,4 +30,18 @@ export const generateRefreshToken = (payload:Payload)=>{
 
 export const generateCSRFToken = ()=>{
 
+}
+
+export const decodeToken = (token:string)=>{
+    const secrets = {"access":ACCESS_SECRET, "refresh":REFRESH_SECRET}
+    const data = jwt.decode(token) as Payload & {type:"access" | "refresh"}
+
+    try{
+        const decoded = jwt.verify(token, secrets[data?.type]) as Payload & {type:"access" | "refresh"}
+        return {...decoded}
+    }catch{
+        throw new InvalidTokenError
+    }
+
+    
 }
