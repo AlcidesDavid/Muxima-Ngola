@@ -1,8 +1,11 @@
 import { accountValidator, shelterValidator, userValidator, validateRequest } from "#Validators"
-import type { LoginService, RegisterShelter, RegisterUserService } from "#Services"
+import type { LoginService, RefreshToken, RegisterShelter, RegisterUserService } from "#Services"
 import type { Request, Response } from "express"
+import type { AuthRequest } from "#/types/controller.js"
+import { InvalidTokenError } from "#/config/errors.js"
+import { RefreshMiddleware } from "#/middlewares/Auth.middleware.js"
 export class AuthController{
-    constructor(private registerUserService:RegisterUserService, private registerShelterService:RegisterShelter,private loginService:LoginService){}
+    constructor(private registerUserService:RegisterUserService, private registerShelterService:RegisterShelter,private loginService:LoginService,private refreshService:RefreshToken){}
         registerUser = [userValidator, async  (req:Request, res:Response)=>{
             const {first_name, last_name, email, password, birthday} = req.body
             const newProfile = await this.registerUserService.exec(email, password,'User', {first_name, last_name, birthday})
@@ -19,7 +22,25 @@ export class AuthController{
             const {email, password} = req.body
 
             const {accessToken, refreshToken} = await this.loginService.exec(email, password)
-
+            res.cookie('accessToken', accessToken)
+            res.cookie('refreshToken', refreshToken)
             return res.json({accessToken, refreshToken})
+        }]
+
+        refresh = [RefreshMiddleware,async (req:AuthRequest, res:Response)=>{
+            const id_account = req?.id_account
+            const role = req?.role
+            
+            
+            if(!id_account || !role){
+                throw new InvalidTokenError
+            }
+            
+            const {accessToken, refreshToken} = await this.refreshService.exec({id_account, role})
+         
+            res.cookie('accessToken', accessToken)
+            res.cookie('refreshToken', refreshToken)
+
+            return res.status(200).json({message:"Token Atualizado"})
         }]
 }

@@ -1,6 +1,6 @@
 import { ForbidenError, InvalidTokenError } from "#/config/errors.js"
 import jwt from "jsonwebtoken"
-type Payload = {
+export type Payload = {
     id_account:string,
     role:'Admin'|'Shelter' | 'User'
 }
@@ -30,6 +30,13 @@ export const generateRefreshToken = (payload:Payload)=>{
 
 export const generateCSRFToken = ()=>{
 
+}
+
+export const getTokens = (payload:Payload)=>{
+    const accessToken = generateAccessToken(payload)
+    const refreshToken = generateRefreshToken(payload)
+
+    return {accessToken, refreshToken}
 }
 
 export const decodeToken = (token:string)=>{

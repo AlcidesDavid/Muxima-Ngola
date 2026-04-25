@@ -7,7 +7,7 @@ export class RegisterKid{
     async exec(kid:KidProps, location:NewLocation){
         return await prismaClient.$transaction(async (tx)=>{
             const newLocation = await this.locationRepository.create(location, tx)
-            const newKid = await this.kidsRepository.create({...kid, location:newLocation.id})
+            const newKid = await this.kidsRepository.create({...kid, location:newLocation.id}, tx)
             return newKid
         })
     }

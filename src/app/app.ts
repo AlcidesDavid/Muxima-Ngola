@@ -3,11 +3,14 @@ import {  Routers } from '#Routes'
 import express, {type Response, type Request, type NextFunction} from 'express'
 import cors from "cors"
 import type { ValidationError } from 'express-validator'
-
+import cookieParser from 'cookie-parser'
 const app = express()
 
 //Config
-    app.use(cors())
+    app.use(cors({
+        credentials:true
+    }))
+    app.use(cookieParser())
     app.use(express.json())
 // Handlers
 app.use((req:Request, res:Response, next:NextFunction)=>{
