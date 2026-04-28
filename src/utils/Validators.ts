@@ -1,6 +1,6 @@
 import { BadRequestError } from "#/config/errors.js";
 import type { NextFunction, Request, Response } from "express";
-import { body, matchedData, validationResult } from "express-validator";
+import { body, matchedData, param, validationResult } from "express-validator";
 
 
 export const validateRequest = (req:Request, _res:Response, next:NextFunction)=>{
@@ -103,3 +103,13 @@ export const kidValidator = [
 
   validateRequest
 ];
+
+export const kidStatusValidator = [
+  body('status').notEmpty().withMessage('Estado é obrigatorio preencha o campo {status}').isIn(["REPORTED" ,  "REVIEWING" , "REUNITED" , "SHELTERED"]).withMessage('Estado invalido'),
+  validateRequest
+]
+
+export const rescueValidator = [
+  param('id').trim(),
+  validateRequest
+]

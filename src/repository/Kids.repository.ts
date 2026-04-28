@@ -37,4 +37,26 @@ export class KidsRepository{
             }
         }})
     }
+
+    async changeStatus(id:string, status:"REPORTED" | "REVIEWING" | "REUNITED" | "SHELTERED", tx?:TransactionClient){
+        const prisma = tx || prismaClient
+        
+        return await prisma.kid.update({where:{id}, data:{
+            status
+        }})
+    }
+    async rescue(id:string, tx?:TransactionClient){
+        const prisma = tx || prismaClient
+        
+        return await prisma.kid.update({where:{id}, data:{
+            status:"SHELTERED",
+            rescued_day:new Date
+        }})
+    }
+
+    async findAll(tx?:TransactionClient){
+        const prisma = tx || prismaClient
+        return await prisma.kid.findMany()
+    }
+    
 }
