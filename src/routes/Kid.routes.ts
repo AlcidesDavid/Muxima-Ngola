@@ -18,5 +18,6 @@ const kidsController = new KidsController(registerKid,rescueKid, getKid)
 
 kidRouter.post('/register', ...kidsController.register)
 kidRouter.get('/', ...kidsController.getKids)
+kidRouter.post('/rescue/:id',...kidsController.rescue)
 
 export {kidRouter}
